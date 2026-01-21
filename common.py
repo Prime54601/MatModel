@@ -1,0 +1,7 @@
+# common constants and functions intended to be used by many files
+
+fileName = "./2024_Wimbledon_featured_matches.csv"
+pointDict = {"15": "1",
+             "30": "2",
+             "40": "3"} # convert points to normalized format
+

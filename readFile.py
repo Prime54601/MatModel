@@ -1,21 +1,6 @@
 import csv
+from common import *
 
-fileName = "./2024_Wimbledon_featured_matches.csv"
-pointDict = {"0": "0",
-             "15": "1",
-             "30": "2",
-             "40": "3",
-             "AD": "AD",
-             "1": "1",
-             "2": "2",
-             "3": "3",
-             "4": "4",
-             "5": "5",
-             "6": "6",
-             "7": "7",
-             "8": "8",
-             "9": "9",
-             "10": "10"}
 # labels = ["elapsed_time","set_no","game_no","point_no","p1_sets","p2_sets","p1_games","p2_games","p1_score","p2_score","server","serve_no","point_victor","p1_points_won","p2_points_won","game_victor","set_victor","p1_ace","p2_ace","p1_winner","p2_winner","winner_shot_type","p1_double_fault","p2_double_fault",'p1_unf_err','p2_unf_err','p1_net_pt','p2_net_pt','p1_net_pt_won','p2_net_pt_won','p1_break_pt','p2_break_pt','p1_break_pt_won','p2_break_pt_won','p1_break_pt_missed','p2_break_pt_missed','p1_distance_run','p2_distance_run','rally_count','speed_mph','serve_width','serve_depth','return_depth']
 
 def readFile():
@@ -41,8 +26,10 @@ def preProcessing(raw):
 
         if raw[i][15 + 3] != "0": # end of one game
             for points in game: # use 1, 2, and 3 to replace original scores for easier calculation afterwards
-                points[8] = pointDict[points[8]]
-                points[9] = pointDict[points[9]]
+                if points[8] in pointDict:
+                    points[8] = pointDict[points[8]]
+                if points[9] in pointDict:
+                    points[9] = pointDict[points[9]]
             
             _set.append(game)
             game = []
@@ -76,9 +63,6 @@ data
   |-sets
     |-games
       |-points
-
-    index the n'th game within a match by data[i][n]
-    index a match by searching for its id(numbers only)
 
 interprets for match terms:
 index name                description                                                                     example
@@ -130,10 +114,10 @@ index name                description                                           
 42    return_depth        depth of return                                                                 "D: Deep, ND: Not Deep"
 
 special notes:
-    points are changed to use continious numbers 1, 2, and 3 instead of 15, 30, and 40. "AD" is unchanged.
+    points are changed to use continious numbers 1, 2, and 3 instead of 15, 30, and 40. "AD" is left untouched.
 '''
 
-# test program to test functions of functions, won't be executed in actual run
+# test program to test functionality of functions, won't be executed in actual run
 if __name__ == "__main__":
     rawData = readFile()
     data = preProcessing(rawData)
@@ -146,11 +130,6 @@ if __name__ == "__main__":
                 for game in _set:
                     for point in game:
                         print(point)
-                        # for element in point:
-                        #     print(element, end="\t")
-                        # print()
                     print("\nend of game\n")
                 print("end of set\n")
         print("end of match\n")
-            
-    # print(data[0])
