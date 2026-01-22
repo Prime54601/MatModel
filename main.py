@@ -1,7 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from statsmodels.stats.diagnostic 
-import acorr_ljungbox
+from statsmodels.stats.diagnostic import acorr_ljungbox
 np.random.seed(123)
 white_noise=np.random.standard_normal(size=100)# 不再指定boxpierce参数，近返回QLB统计量检验结果
 # 同时设置lags参数为一个列表，相应只返回对应延迟阶数的检验结果
