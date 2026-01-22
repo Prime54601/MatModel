@@ -49,6 +49,26 @@ def preProcessing(raw):
     
     return data
 
+def extraceData(data):
+    extracted = []
+    for match in data:
+        match_temp = []
+        for _set in match:
+            set_temp = []
+            if(type(_set) == tuple):
+                print("a new match begins here\n", "# and players of this match:")
+                print(_set, "\n\nbelow are the point records of this match:\n")
+            else:
+                for game in _set:
+                    game_temp = []
+                    for point in game:
+                        point_temp = []
+                        point_temp.append(point[15:17])
+                        game_temp.append(point_temp)
+                    print("\nend of game\n")
+                match_temp.append(set_temp)
+        extracted.append(match_temp)
+
 '''
 content of data:
 [

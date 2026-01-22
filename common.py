@@ -5,3 +5,5 @@ pointDict = {"15": "1",
              "30": "2",
              "40": "3"} # convert points to normalized format
 
+playerDict = {"A": "1", "B": "2"}
+reversePlayerDict = {v: k for k, v in playerDict.items()}
