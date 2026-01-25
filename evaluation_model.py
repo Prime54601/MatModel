@@ -110,6 +110,26 @@ def getQ(match, server, setNo, gameNo):
     q = scoredPoint[0] / totalPoint[0]
     return q
 
+def getMoment(EstList):
+    momentList = []
+    for i in range(len(EstList)):
+        if i > 0:
+            momentList.append(EstList[i] - EstList[i - 1])
+    return momentList
+
+def getSwing(EstList, momentList):
+    TAU = 0.5
+    EPSILON = 0.05
+
+    swingList = []
+    for i in range(len(EstList) - 1):
+        if i == 0:
+            continue
+        if abs(EstList[i] - 0.5) < EPSILON and (momentList[i] * momentList[i - 1] < 0.0 and abs(momentList[i] - momentList[i - 1]) > TAU):
+            swingList.append(i + 1)
+
+    return swingList
+
 
 if __name__ == "__main__":
     MATCHNO = 1701
@@ -148,35 +168,35 @@ if __name__ == "__main__":
             server = reversePlayerDict[_set[j][-1][10]]
             alist.append(Eval(Pa, Pb, server, qa, qb))
             blist.append(1 - Eval(Pa, Pb, server, qa, qb))
+
+
+    amoment = getMoment(alist)
+    bmoment = getMoment(blist)
+
+    aSwing = getSwing(alist, amoment)
+    bSwing = getSwing(blist, bmoment)
     #=========================code by qwen=========================
     # Plotting the list using matplotlib
     plt.figure(figsize=(12, 6))
     plt.plot(range(1, len(alist) + 1), alist, marker='o', linestyle='-', color='r', label='Player A')
     plt.plot(range(1, len(alist) + 1), blist, marker='o', linestyle='-', color='b', label='Player B')
     
-    # Find points where A's value crosses 0.5 (swing points)
+    # Find swing points
     swing_points_x = []
     swing_points_y = []
-    for i in range(len(alist)):
-        x = i + 1
-        y = alist[i]
-        
-        # Check if this point is close to 0.5 or crosses over 0.5
-        if abs(y - 0.5) < 0.01:  # Direct crossing or very close
-            swing_points_x.append(x)
-            swing_points_y.append(y)
-        elif i < len(alist) - 1:  # Need at least one latter point to check for crossing
-            prev_y = alist[i - 1]
-            # Check if line segment crosses 0.5
-            if (prev_y < 0.5 and y > 0.5) or (prev_y > 0.5 and y < 0.5):
-                swing_points_x.append(i)
-                swing_points_y.append(prev_y)
+
+    for i in aSwing:
+        swing_points_x.append(i)
+        swing_points_y.append(alist[i - 1])
+    for i in bSwing:
+        swing_points_x.append(i)
+        swing_points_y.append(blist[i - 1])
     
     # Mark swing points
     if swing_points_x:
         plt.scatter(swing_points_x, swing_points_y, color='green', s=100, zorder=5, label='Swing Points')
-        for x, y in zip(swing_points_x, swing_points_y):
-            plt.annotate('swing', (x, y), xytext=(x, y+0.05), fontsize=9, ha='center')
+        # for x, y in zip(swing_points_x, swing_points_y):
+        #     plt.annotate('swing', (x, y), xytext=(x, y+0.05), fontsize=9, ha='center')
 
     plt.title(f'Evaluation Values for Match {MATCHNO}')
     plt.xlabel('Game Number')
@@ -186,3 +206,4 @@ if __name__ == "__main__":
     plt.savefig('/home/prime54601/Downloads/2024_MCM_Problem_C_Data/evaluation_plot.png')
     print("Plot saved as 'evaluation_plot.png'")
     #================================================================
+
